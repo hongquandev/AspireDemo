@@ -1,4 +1,4 @@
-# Laravel Code Challenge
+# Laravel mini-aspire APIs
 
 Your task is to build a mini-aspire API:
 It is an app that allows authenticated users to go through a loan application. It doesn’t have to contain too many fields, but at least “amount
@@ -9,14 +9,13 @@ need to check if the dates are correct but will just set the weekly amount to be
 ## How to use and run in local
 
 - Clone this repository 
-- Copy __.env.example__ file to __.env__ and edit some information like database
-- Run __composer install__
-- Run __php artisan key:generate__
-- Run __php artisan migrate --seed__
+- Run ./setup.sh (Set permission sudo chmod u+x ./setup.sh before to run )
+## How to use APIs
 - All API's document are public here : __https://documenter.getpostman.com/view/1752165/UVC3jTRB__
 - Open Postman App/Web to use APIs
 - We need add a __{{API_URL}}__ variable to Postman environments example: __http://local.aspire.com/api__
 - Using API __api/auth/login__ to get Jwt'user Token. And save it to Postman environments (__{{TOKEN}}__ variable)
-- 
-- 
+ 
 ## License
+
+
