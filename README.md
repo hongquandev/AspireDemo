@@ -9,7 +9,7 @@ need to check if the dates are correct but will just set the weekly amount to be
 ## How to use and run in local
 
 - Clone this repository 
-- Run ./setup.sh (Set permission sudo chmod u+x ./setup.sh before to run )
+- Run __./setup.sh__ (Set permission sudo chmod u+x ./setup.sh before run )
 ## How to use APIs
 - All API's document are public here : __https://documenter.getpostman.com/view/1752165/UVC3jTRB__
 - Open Postman App/Web to use APIs
