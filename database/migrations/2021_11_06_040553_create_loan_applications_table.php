@@ -19,8 +19,8 @@ class CreateLoanApplicationsTable extends Migration
             $table->integer('loan_term');
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected']);
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('approved_by_id')->nullable()->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('approved_by_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\LoanApplication;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Http\Request;
 
 class LoanApplicationPolicy
 {
@@ -18,7 +19,7 @@ class LoanApplicationPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +31,7 @@ class LoanApplicationPolicy
      */
     public function view(User $user, LoanApplication $loanApplication)
     {
-        //
+        return $user->is_admin || $user->id == $loanApplication->user->id;
     }
 
     /**
@@ -42,6 +43,7 @@ class LoanApplicationPolicy
     public function create(User $user)
     {
         //
+        return true;
     }
 
     /**
@@ -53,7 +55,7 @@ class LoanApplicationPolicy
      */
     public function update(User $user, LoanApplication $loanApplication)
     {
-        return $user->id == $loanApplication->user->id;
+        return !empty(request()->post('status')) ? $user->is_admin : $user->id == $loanApplication->user->id;
     }
 
     /**
@@ -65,7 +67,7 @@ class LoanApplicationPolicy
      */
     public function delete(User $user, LoanApplication $loanApplication)
     {
-        return $user->id == $loanApplication->user->id;
+        return $user->is_admin || $user->id == $loanApplication->user->id;
     }
 
     /**

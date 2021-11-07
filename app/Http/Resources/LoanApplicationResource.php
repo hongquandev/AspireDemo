@@ -2,11 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\LoanApplication;
-use App\Models\LoanPaymentOrder;
-use App\Services\LoanPaymentService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
 
 class LoanApplicationResource extends JsonResource
 {
@@ -23,9 +19,9 @@ class LoanApplicationResource extends JsonResource
             'id' => $this->id,
             'loan_amount' => (float) $this->loan_amount,
             'loan_term' => (float) $this->loan_term,
-            'weekly_amount' => (float) $this->weeklyAmount(),
+            'weekly_payment_amount' => (float) $this->weeklyPaymentAmount(),
             'paid_amount_total' => (float) $this->paidAmountTotal(),
-            'order_total' => $this->orders->count(),
+            'repayment_total' => $this->orders->count(),
             'description' => $this->description,
             'status' => $this->status,
             'user' => $this->user,

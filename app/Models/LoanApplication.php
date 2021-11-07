@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\LoanApplicationService;
 use App\Services\LoanPaymentService;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,8 +13,6 @@ class LoanApplication extends Model
     use HasFactory;
 
     public $table = 'loan_applications';
-
-    public $timestamps = true;
 
     protected $dates = [
         'created_at',
@@ -33,11 +33,10 @@ class LoanApplication extends Model
         'deleted_at',
     ];
 
-    protected $casts = [
-        'updated_at' => "datetime:Y-m-d H:i:s",
-        'created_at' => "datetime:Y-m-d H:i:s",
-        'deleted_at' => "datetime:Y-m-d H:i:s",
-    ];
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     /**
      * approvedUser
@@ -60,13 +59,15 @@ class LoanApplication extends Model
     }
 
     /**
-     * weeklyAmount
+     * weeklyPaymentAmount
      *
      * @return void
      */
-    public function weeklyAmount()
+    public function weeklyPaymentAmount()
     {
-        return round($this->loan_amount / $this->loan_term, 2);
+        //$loanApplicationService = LoanApplicationService::getInstance();
+        $loanApplicationService = app()->make(LoanApplicationService::class);
+        return $loanApplicationService->weeklyPaymentCalculator($this->loan_amount, $this->loan_term);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -35,15 +36,18 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+    protected $dates = [
+        'email_verified_at',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -62,5 +66,35 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * roles
+     *
+     * @return void
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * getIsAdminAttribute
+     *
+     * @return void
+     */
+    public function getIsAdminAttribute()
+    {
+        return $this->roles->contains(1);
+    }
+
+    /**
+     * getIsUserAttribute
+     *
+     * @return void
+     */
+    public function getIsUserAttribute()
+    {
+        return $this->roles->contains(2);
     }
 }

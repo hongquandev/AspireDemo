@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'not_approved' => 'Your loan application is not approved yet.',
+    'not_approved' => 'The loan application is not approved yet.',
 ];

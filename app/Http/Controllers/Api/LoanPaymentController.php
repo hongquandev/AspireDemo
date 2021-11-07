@@ -10,7 +10,7 @@ use App\Services\LoanApplicationService;
 use App\Services\LoanPaymentService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoanPaymentController extends Controller
 {
@@ -40,21 +40,26 @@ class LoanPaymentController extends Controller
     {
         try {
             $user = auth()->user();
-            $params = $request->all();
-            $loanApplicationId = $params['loan_application_id'];
+
+            $loanApplicationId = $request->post('loan_application_id');
             $loanApplication = LoanApplication::findOrFail($loanApplicationId);
 
+            /**
+             * @var LoanApplication $loanApplication
+             */
+
             if ($loanApplication->status != LoanApplicationService::APPOVED_STATUS) {
-                return $this->responseFailJson(__('loan.not_approved'), null);
+                return $this->responseFailJson(__('loan.not_approved'));
             }
 
-            $loanPaymentOrder = $this->loanPaymentService->add($user, $loanApplication, $loanApplication->weeklyAmount());
+            if ($loanApplication->user_id != auth()->id()) {
+                return $this->responseFailJson(__('messages.permission_denied'), null, Response::HTTP_FORBIDDEN);
+            }
+
+            $loanPaymentOrder = $this->loanPaymentService->add($user, $loanApplication, $loanApplication->weeklyPaymentAmount());
             return $this->responseSuccessJson(new LoanPaymentOrderResource($loanPaymentOrder));
         } catch (ModelNotFoundException $er) {
-            return $this->responseFailJson(__('messages.item_not_found'), null);
-        } catch (\Exception $er) {
-            Log::error($er->getMessage());
-            return $this->responseFailJson(__('messages.process_error'), null);
+            return $this->responseFailJson(__('messages.item_not_found'));
         }
     }
 }

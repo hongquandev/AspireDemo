@@ -10,6 +10,7 @@ class LoanApplicationService
     public const PENDING_STATUS = 'pending';
     public const APPOVED_STATUS = 'approved';
     public const REJECTED_STATUS = 'rejected';
+    public const DEFAULT_INTEREST_RATE = 9.0; // 9%/year
 
     protected static $instance;
 
@@ -27,53 +28,54 @@ class LoanApplicationService
     }
 
     /**
+     * weeklyPaymentCalculator
+     *
+     * @param float $loanAmount
+     * @param int $totalPayments
+     * @param float $interest
+     * @return void
+     */
+    public function weeklyPaymentCalculator(float $loanAmount, int $loanTerm, float $interestRate = null)
+    {
+        $interestRate = $interestRate ?? self::DEFAULT_INTEREST_RATE;
+        $interestRatePerWeek = $interestRate / 5200;
+        $value1 = $interestRatePerWeek * pow((1 + $interestRatePerWeek), $loanTerm);
+        $value2 = pow((1 + $interestRatePerWeek), $loanTerm) - 1;
+        $pmt = $loanAmount * ($value1 / $value2);
+        return round($pmt, 2);
+    }
+
+    /**
      * add
      *
      * @param User $user
-     * @param mixed $loanAmount
-     * @param mixed $loanTerm
-     * @param mixed $description
+     * @param Array $params
      * @return LoanApplication|null
      */
-    public function add(User $user, $loanAmount, $loanTerm, $description = null)
+    public function add(User $user, array $params)
     {
-        $loanApplication = LoanApplication::create([
+        return LoanApplication::create(array_merge([
             'user_id' => $user->id,
-            'loan_amount' => $loanAmount,
-            'loan_term' => $loanTerm,
-            'description' => $description,
             'status' => self::PENDING_STATUS,
-        ]);
-        return $loanApplication;
+        ], $params));
     }
 
     /**
      * update
      *
-     * @param mixed $id
-     * @param mixed $params
+     * @param LoanApplication $loanApplication
+     * @param array $params
      * @return LoanApplication|null
      */
-    public function update(LoanApplication $loanApplication, $params = [])
+    public function update(LoanApplication $loanApplication, array $params = [])
     {
-        $loanApplication->loan_amount = $params['loan_amount'];
-
-        if (!empty($params['loan_term'])) {
-            $loanApplication->loan_term = $params['loan_term'];
-        }
-
-        if (!empty($params['description'])) {
-            $loanApplication->description = $params['description'];
-        }
-
         if (!empty($params['status'])) {
-            $loanApplication->status = $params['status'];
             if (in_array($params['status'], [self::APPOVED_STATUS, self::REJECTED_STATUS])) {
-                $loanApplication->approved_by_id = auth()->id();
+                $params['approved_by_id'] = auth()->id();
             }
         }
 
-        $loanApplication->save();
+        $loanApplication->update($params);
         return $loanApplication;
     }
 }
