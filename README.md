@@ -12,11 +12,16 @@ need to check if the dates are correct but will just set the weekly amount to be
 - Cd to project root and run __chmod u+x ./setup.sh && ./setup.sh__
 
 ## How to use APIs
-- All API's document are public here : __https://documenter.getpostman.com/view/1752165/UVC3jTRB__
+- All API document are public here : __https://documenter.getpostman.com/view/1752165/UVC3jTRB__
+- We can import to postman via json link : __https://www.getpostman.com/collections/f2b88bff5ec9d2a76a85__
+- Postman environment at here: __https://go.postman.co/workspace/My-Workspace~b597c852-084e-4a17-80fe-3403c4e18a26/environment/1752165-643ebf85-bda4-4c8f-bfdc-7253b256a2ff__
 - Open Postman App/Web to use APIs
-- We need add a __{{API_URL}}__ variable to Postman environments example: __http://local.aspire.com/api__
-- Using API __api/auth/login__ to get Jwt'user Token. And save it to Postman environments (__{{TOKEN}}__ variable)
- 
+- We need add a __{{API_URL}}__ && __{{TOKEN}}__ variable to Postman environment example: __http://local.aspire.com/api__
+- We have two user roles. (Admin & User)
+- Using login API __api/auth/login__ with default credentials __devtesting@gmail.com__ - __123456__ to get user's jwt (Role is "User").
+- To approve a loan application, Please login with admin credentials __admin@gmail.com__ - __123456__ then use __update loan application API__ with param status = "approved"
+
+
 ## License
 
 
